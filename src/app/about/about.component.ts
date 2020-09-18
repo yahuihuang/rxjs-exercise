@@ -19,6 +19,7 @@ import {createHttpObservable} from '../common/util';
 
 
 @Component({
+    // tslint:disable-next-line: component-selector
     selector: 'about',
     templateUrl: './about.component.html',
     styleUrls: ['./about.component.css']
@@ -61,23 +62,12 @@ export class AboutComponent implements OnInit {
 
       // 4.fetch api
 
-      const http$ = Observable.create(observer => {
+      const http$ = createHttpObservable('/api/courses');
+      const courses$ = http$.pipe(
+        map(res => Object.values(res['payload']))
+      );
 
-        fetch('/api/courses')
-          .then(response => {
-            return response.json();
-          })
-          .then(body => {
-            observer.next(body);
-            observer.complete();
-          })
-          .catch(err => {
-            observer.error(err);
-          });
-
-      });
-
-      http$.subscribe(
+      courses$.subscribe(
         courses => {
           console.log('courses: ');
           console.log(courses);
@@ -90,9 +80,3 @@ export class AboutComponent implements OnInit {
 
     }
 }
-
-
-
-
-
-
