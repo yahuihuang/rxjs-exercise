@@ -26,8 +26,27 @@ import {createHttpObservable} from '../common/util';
 export class AboutComponent implements OnInit {
 
     ngOnInit() {
+      // 1.interval
+      const interval$ = interval(1000);
+      interval$.subscribe(val => {
+        console.log('interval one - ' + val);
+      });
 
+      interval$.subscribe(val => {
+        console.log('interval two - ' + val);
+      });
 
+      // 2.timer
+      const timer$ = timer(5000, 2000);
+      timer$.subscribe(val => {
+        console.log('timer - ' + val);
+      });
+
+      // 3.fromEvent
+      const event$ = fromEvent(document, 'click');
+      event$.subscribe(evt => {
+        console.log('document.click => ', evt);
+      });
     }
 
 
