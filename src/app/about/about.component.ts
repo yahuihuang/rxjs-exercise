@@ -28,28 +28,37 @@ export class AboutComponent implements OnInit {
     ngOnInit() {
       // 1.interval
       const interval$ = interval(1000);
-      interval$.subscribe(val => {
+      const sub = interval$.subscribe(val => {
         console.log('interval one - ' + val);
       });
 
-      interval$.subscribe(val => {
-        console.log('interval two - ' + val);
-      });
+      // interval$.subscribe(val => {
+      //   console.log('interval two - ' + val);
+      // });
+
+      // 取消訂閱
+      setTimeout(() => sub.unsubscribe(), 5000);
 
       // 2.timer
-      const timer$ = timer(5000, 2000);
-      timer$.subscribe(val => {
-        console.log('timer - ' + val);
-      });
+      // const timer$ = timer(5000, 2000);
+      // timer$.subscribe(val => {
+      //   console.log('timer - ' + val);
+      // });
 
       // 3.fromEvent
       const event$ = fromEvent(document, 'click');
-      event$.subscribe(evt => {
-        console.log('document.click => ', evt);
-      });
+      event$.subscribe(
+        evt => {
+          console.log('document.click => ', evt);
+        },
+        err => {
+          console.log('error => ' + err);
+        },
+        () => {
+          console.log('Complete !');
+        }
+      );
     }
-
-
 }
 
 
