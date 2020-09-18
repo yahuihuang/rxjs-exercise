@@ -61,22 +61,21 @@ export class AboutComponent implements OnInit {
       // );
 
       // 4.fetch api
+      // const http$ = createHttpObservable('/api/courses');
+      // const courses$ = http$.pipe(
+      //   map(res => Object.values(res['payload']))
+      // );
 
-      const http$ = createHttpObservable('/api/courses');
-      const courses$ = http$.pipe(
-        map(res => Object.values(res['payload']))
-      );
-
-      courses$.subscribe(
-        courses => {
-          console.log('courses: ');
-          console.log(courses);
-        },
-        noop,
-        () => {
-          console.log('http$ subscribe complete.');
-        }
-      );
+      // courses$.subscribe(
+      //   courses => {
+      //     console.log('courses: ');
+      //     console.log(courses);
+      //   },
+      //   noop,
+      //   () => {
+      //     console.log('http$ subscribe complete.');
+      //   }
+      // );
 
     }
 }
