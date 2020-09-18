@@ -27,17 +27,17 @@ export class AboutComponent implements OnInit {
 
     ngOnInit() {
       // 1.interval
-      const interval$ = interval(1000);
-      const sub = interval$.subscribe(val => {
-        console.log('interval one - ' + val);
-      });
+      // const interval$ = interval(1000);
+      // const sub = interval$.subscribe(val => {
+      //   console.log('interval one - ' + val);
+      // });
 
       // interval$.subscribe(val => {
       //   console.log('interval two - ' + val);
       // });
 
       // 取消訂閱
-      setTimeout(() => sub.unsubscribe(), 5000);
+      // setTimeout(() => sub.unsubscribe(), 5000);
 
       // 2.timer
       // const timer$ = timer(5000, 2000);
@@ -46,18 +46,48 @@ export class AboutComponent implements OnInit {
       // });
 
       // 3.fromEvent
-      const event$ = fromEvent(document, 'click');
-      event$.subscribe(
-        evt => {
-          console.log('document.click => ', evt);
+      // const event$ = fromEvent(document, 'click');
+      // event$.subscribe(
+      //   evt => {
+      //     console.log('document.click => ', evt);
+      //   },
+      //   err => {
+      //     console.log('error => ' + err);
+      //   },
+      //   () => {
+      //     console.log('Complete !');
+      //   }
+      // );
+
+      // 4.fetch api
+
+      const http$ = Observable.create(observer => {
+
+        fetch('/api/courses')
+          .then(response => {
+            return response.json();
+          })
+          .then(body => {
+            observer.next(body);
+            observer.complete();
+          })
+          .catch(err => {
+            observer.error(err);
+          });
+
+      });
+
+      http$.subscribe(
+        courses => {
+          console.log('courses: ');
+          console.log(courses);
         },
-        err => {
-          console.log('error => ' + err);
-        },
+        noop,
         () => {
-          console.log('Complete !');
+          console.log('http$ subscribe complete.');
         }
       );
+
     }
 }
 
