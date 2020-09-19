@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Course} from '../model/course';
-import {noop } from 'rxjs';
+import {noop, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import {createHttpObservable} from '../common/util';
 import {Store} from '../common/store.service';
@@ -13,8 +13,9 @@ import {Store} from '../common/store.service';
 })
 export class HomeComponent implements OnInit {
 
-    beginnerCourses: Course[];
-    advancedCourses: Course[];
+    // become a stream of data
+    beginnerCourses$: Observable<Course[]>;
+    advancedCourses$: Observable<Course[]>;
 
     constructor(private store: Store) {
 
@@ -24,28 +25,17 @@ export class HomeComponent implements OnInit {
 
       // 5.fetch api
       const http$ = createHttpObservable('/api/courses');
-      const courses$ = http$.pipe(
+      const courses$: Observable<Course[]> = http$.pipe(
         map(res => Object.values(res['payload']))
       );
 
-      courses$.subscribe(
-        courses => {
-          console.log('courses: ');
-          console.log(courses);
-
-          this.beginnerCourses
-                = courses.filter(course => course.category === 'BEGINNER');
-          this.advancedCourses
-                = courses.filter(course => course.category === 'ADVANCED');
-          console.log(this.beginnerCourses);
-          console.log(this.advancedCourses);
-        },
-        noop,
-        () => {
-          console.log('http$ subscribe complete.');
-        }
-      );
-
+      this.beginnerCourses$
+          = courses$.pipe(
+              map(courses => courses.filter(course => course.category === 'BEGINNER'))
+            );
+      this.advancedCourses$
+          = courses$.pipe(
+              map(courses => courses.filter(course => course.category === 'ADVANCED'))
+            );
     }
-
 }
