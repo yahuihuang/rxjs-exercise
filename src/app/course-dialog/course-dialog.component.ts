@@ -42,12 +42,12 @@ export class CourseDialogComponent implements AfterViewInit, OnInit {
     }
 
     ngOnInit(): void {
-      this.form.valueChanges
-        .pipe(
-          filter(() => this.form.valid),
-          concatMap(changes => this.saveCourse(changes))
-        )
-        .subscribe();
+      // this.form.valueChanges
+      //   .pipe(
+      //     filter(() => this.form.valid),
+      //     concatMap(changes => this.saveCourse(changes))
+      //   )
+      //   .subscribe();
     }
 
     saveCourse(changes) {
@@ -61,19 +61,12 @@ export class CourseDialogComponent implements AfterViewInit, OnInit {
     }
 
     ngAfterViewInit() {
-
+      fromEvent(this.saveButton.nativeElement, 'click')
+        .pipe(
+          exhaustMap(() => this.saveCourse(this.form.value))
+        )
+        .subscribe();
     }
-
-    save() {
-        this.store.saveCourse(this.course.id, this.form.value)
-            .subscribe(
-                () => this.close(),
-                err => console.log('Error saving course', err)
-            );
-    }
-
-
-
 
     close() {
         this.dialogRef.close();
