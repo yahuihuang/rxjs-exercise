@@ -1,3 +1,4 @@
+import { from, Observable, timer } from 'rxjs';
 import {Component, OnInit} from '@angular/core';
 import {Store} from './common/store.service';
 
@@ -16,5 +17,4 @@ export class AppComponent implements  OnInit{
     ngOnInit() {
         this.store.init();
     }
-
 }

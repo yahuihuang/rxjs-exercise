@@ -11,9 +11,9 @@ import {
     concatMap,
     switchMap,
     withLatestFrom,
-    concatAll, shareReplay
+    concatAll, shareReplay, debounce, throttle, throttleTime
 } from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat} from 'rxjs';
+import {merge, fromEvent, Observable, concat, interval} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import {createHttpObservable} from '../common/util';
 import {Store} from '../common/store.service';
@@ -39,7 +39,7 @@ export class CourseComponent implements OnInit, AfterViewInit {
         this.courseId = this.route.snapshot.params['id'];
         console.log('courseId: ' + this.courseId);
         // this.course$ = this.store.selectCourseById(this.courseId);
-        this.course$ = createHttpObservable('/api/course/${courseId}');
+        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
         // this.lessons$ = createHttpObservable(`/api/lessons?courseId=${courseId}&pageSize=100`)
         //                   .pipe(
         //                     map(res => res['payload'])
@@ -47,19 +47,30 @@ export class CourseComponent implements OnInit, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        const searchLessons$ =  fromEvent<any>(this.input.nativeElement, 'keyup')
-            .pipe(
-                map(event => event.target.value),
-                debounceTime(400),  // delay in 400ms
-                distinctUntilChanged(),
-                // concatMap(search => this.loadLessons(search))
-                switchMap(search => this.loadLessons(search))
-            );
+        // const searchLessons$ =  fromEvent<any>(this.input.nativeElement, 'keyup')
+        //     .pipe(
+        //         map(event => event.target.value),
+        //         debounceTime(400),  // delay in 400ms
+        //         distinctUntilChanged(),
+        //         // concatMap(search => this.loadLessons(search))
+        //         switchMap(search => this.loadLessons(search))
+        //     );
 
-        const initialLessons$ = this.loadLessons();
+        // const initialLessons$ = this.loadLessons();
 
-        this.lessons$ = concat(initialLessons$, searchLessons$);
+        // this.lessons$ = concat(initialLessons$, searchLessons$);
 
+        fromEvent<any>(this.input.nativeElement, 'keyup')
+          .pipe(
+            map(event => event.target.value),
+            // throttle(() => interval(500)),
+            throttleTime(500),
+            // startWith(''),
+            // debounceTime(400),
+            // distinctUntilChanged(),
+            // switchMap(search => this.loadLessons(search))
+          )
+          .subscribe(console.log);
     }
 
     loadLessons(search = ''): Observable<Lesson[]> {
