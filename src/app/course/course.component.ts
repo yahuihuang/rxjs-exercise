@@ -1,3 +1,4 @@
+import { StoreService } from 'app/common/store.service';
 import {
   AfterViewInit,
   Component,
@@ -30,7 +31,7 @@ import { createHttpObservable } from '../common/util';
   styleUrls: ['./course.component.css'],
 })
 export class CourseComponent implements OnInit, AfterViewInit {
-  courseId: string;
+  courseId: number;
 
   course$: Observable<Course>;
 
@@ -38,12 +39,12 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
   @ViewChild('searchInput', { static: true }) input: ElementRef;
 
-  constructor(private route: ActivatedRoute) {}
+  constructor(private route: ActivatedRoute, private store: StoreService) {}
 
   ngOnInit() {
     this.courseId = this.route.snapshot.params['id'];
 
-    this.course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+    this.course$ = this.store.selectCourseById(this.courseId);
   }
 
   ngAfterViewInit() {
