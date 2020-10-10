@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { from } from 'rxjs';
+import { BehaviorSubject, from } from 'rxjs';
 import { Subject } from 'rxjs/internal/Subject';
 
 @Component({
@@ -10,7 +10,8 @@ import { Subject } from 'rxjs/internal/Subject';
 export class AboutComponent implements OnInit {
 
   ngOnInit() {
-    const subject = new Subject();
+    const subject = new BehaviorSubject<number>(0);
+    // const subject = new Subject();
     // subject.complete();
     const series$ = subject.asObservable();
     series$.subscribe(val => console.log('early sub: ' + val));
@@ -18,7 +19,7 @@ export class AboutComponent implements OnInit {
     subject.next(1);
     subject.next(2);
     subject.next(3);
-    // subject.complete();
+    subject.complete();
 
     setTimeout(() => {
       series$.subscribe(val => console.log('late sub: ' + val));
